@@ -286,27 +286,49 @@ body {
 .hero-title {
   font-size: 4rem;
   font-weight: 900;
-  background: linear-gradient(45deg, #3498ff, #64b5f6, #81c7ff);
+  /* fallback color for compatibility */
+  color: #74b9ff;
+  background: linear-gradient(45deg, #74b9ff, #0984e3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
   letter-spacing: -2px;
-  text-shadow: 0 0 30px rgba(52, 152, 255, 0.3);
+  text-shadow: 0 0 30px rgba(116, 185, 255, 0.4);
   position: relative;
+}
+
+/* 모바일에서 그라디언트가 지원되지 않을 경우 대비 */
+@supports not (-webkit-background-clip: text) {
+  .hero-title {
+    color: #74b9ff !important;
+    background: none !important;
+    -webkit-text-fill-color: unset !important;
+  }
 }
 
 .hero-title-en {
   font-size: 2rem;
   font-weight: 600;
-  background: linear-gradient(45deg, #64b5f6, #81c7ff);
+  /* fallback color for compatibility */
+  color: #81c7ff;
+  background: linear-gradient(45deg, #81c7ff, #74b9ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0.5rem 0 1rem 0;
   letter-spacing: 3px;
-  opacity: 0.9;
-  text-shadow: 0 0 20px rgba(100, 181, 246, 0.2);
+  opacity: 0.95;
+  text-shadow: 0 0 20px rgba(129, 199, 255, 0.3);
+}
+
+/* 모바일에서 그라디언트가 지원되지 않을 경우 대비 */
+@supports not (-webkit-background-clip: text) {
+  .hero-title-en {
+    color: #81c7ff !important;
+    background: none !important;
+    -webkit-text-fill-color: unset !important;
+  }
 }
 
 .hero-role {
@@ -1027,6 +1049,10 @@ body {
   .hero-title {
     font-size: 2.5rem;
     line-height: 1.2;
+  }
+  
+  .hero-title-en {
+    font-size: 1.4rem;
   }
   
   .header {
