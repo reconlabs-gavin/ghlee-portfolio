@@ -17,7 +17,7 @@ function App() {
     <div className="app">
       {/* Navigation */}
       <nav className="nav-bar">
-        <div className="nav-brand">이건희 LEE GEON HEE</div>
+        <div className="nav-brand">LEE GEON HEE 이 건 희</div>
         <div className="nav-links">
           <button onClick={() => scrollToSection('home')}>Home</button>
           <button onClick={() => scrollToSection('about')}>About</button>
