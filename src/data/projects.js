@@ -3,7 +3,7 @@ const projects = [
     id: 1,
     title: "PMCS(Perigee Mission Control System)",
     period: "2023.06 – 2024.10",
-    image: "../assets/jdp-01k.png",
+    image: "../assets/pmcs.png",
     description: "웹 기반 발사체 & 지상 설비 통합 관제 시스템 개발",
     technologies: ["React", "TypeScript", "FastAPI", "Python", "RabbitMQ"],
     highlights: [
@@ -17,7 +17,7 @@ const projects = [
     id: 2,
     title: "저온가스 저장탱크 모니터링 시스템",
     period: "2021.06 – 2022.06",
-    image: "https://via.placeholder.com/400x250/64b5f6/ffffff?text=Tank+Monitoring+System",
+    image: "../assets/biosight.png",
     description: "냉동고·저온가스 탱크 상태를 실시간으로 모니터링하는 시스템",
     technologies: ["React", "TypeScript", "C#", ".NET"],
     highlights: [
@@ -31,7 +31,7 @@ const projects = [
     id: 3,
     title: "미디어 공급 냉장고 시스템",
     period: "2022.07 – 2023.03",
-    image: "https://via.placeholder.com/400x250/81c7ff/ffffff?text=Media+Supply+System",
+    image: "../assets/robo-mr.png",
     description: "배양액의 가열 및 공급 상태를 모니터링하는 냉장 시스템",
     technologies: ["React", "TypeScript", "C#", ".NET"],
     highlights: [
@@ -45,7 +45,7 @@ const projects = [
     id: 4,
     title: "AI 기반 대뇌 피질 두께분석 솔루션",
     period: "2019.02 – 2019.06",
-    image: "https://via.placeholder.com/400x250/3498ff/ffffff?text=Brain+MRI+Analysis",
+    image: "../assets/jad-02k.png",
     description: "MRI 데이터를 통한 3D 뇌 시각화 및 분석 솔루션",
     technologies: ["React", "TypeScript", "three.js", "vtk.js"],
     highlights: [
@@ -59,7 +59,7 @@ const projects = [
     id: 5,
     title: "AI 기반 전립선암 병리영상 솔루션",
     period: "2019.07 – 2021.05",
-    image: "https://via.placeholder.com/400x250/64b5f6/ffffff?text=Pathology+Analysis",
+    image: "../assets/jdp-01k.png",
     description: "병리영상(WSI)으로부터 전립선암을 진단하는 AI 플랫폼",
     technologies: ["React", "TypeScript", "openseadragon.js"],
     highlights: [

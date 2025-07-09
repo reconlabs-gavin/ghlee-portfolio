@@ -1,5 +1,21 @@
 import projects from '../data/projects'
 
+// Import all project images
+import pmcsImg from '../assets/pmcs.png'
+import biosightImg from '../assets/biosight.png'
+import roboMrImg from '../assets/robo-mr.png'
+import jad02kImg from '../assets/jad-02k.png'
+import jdp01kImg from '../assets/jdp-01k.png'
+
+// Create image mapping
+const imageMap = {
+  1: pmcsImg,
+  2: biosightImg,
+  3: roboMrImg,
+  4: jad02kImg,
+  5: jdp01kImg
+}
+
 export default function Projects() {
   return (
     <div className="projects">
@@ -9,17 +25,11 @@ export default function Projects() {
           <div key={project.id} className="project-card">
             <div className="project-image">
               <img 
-                src="https://picsum.photos/400/200"
+                src={imageMap[project.id]}
                 alt={project.title} 
                 style={{
-                  width: '100%',
-                  height: '200px',
-                  objectFit: 'cover',
                   backgroundColor: '#f0f0f0',
                   border: '1px solid #ddd'
-                }}
-                onError={(e) => {
-                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlPC90ZXh0Pjwvc3ZnPg=='
                 }}
               />
               <div className="project-period">{project.period}</div>

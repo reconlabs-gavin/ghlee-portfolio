@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498ff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#64b5f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#81c7ff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="codeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e3f2fd;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#bgGradient)" stroke="#2196f3" stroke-width="2"/>
+  
+  <!-- Code brackets -->
+  <path d="M25 35 L20 40 L20 50 L20 60 L25 65" stroke="url(#codeGradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M75 35 L80 40 L80 50 L80 60 L75 65" stroke="url(#codeGradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Code slash -->
+  <line x1="40" y1="30" x2="60" y2="70" stroke="url(#codeGradient)" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Developer initials LGH -->
+  <text x="50" y="55" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="url(#codeGradient)">LGH</text>
+</svg>

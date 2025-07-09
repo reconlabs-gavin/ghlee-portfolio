@@ -1,6 +1,7 @@
 const skills = [
-  'Python', 'Java', 'TypeScript', 'React', 'HTML', 'CSS', 'MySQL',
-  'Git', 'Gitlab', 'Docker', 'Linux'
+  'Python', 'JavaScript', 'TypeScript', 'React', 'HTML', 'CSS', 'MySQL',
+  'Git', 'Docker', 'Linux', 'MongoDB', 'FastAPI',
+  'RabbitMQ', 'C#', '.NET', 'three.js', 'vtk.js'
 ]
 
 export default skills
