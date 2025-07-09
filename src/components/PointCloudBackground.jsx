@@ -17,6 +17,17 @@ export default function PointCloudBackground() {
     console.log('PointCloudBackground: Starting initialization...')
     isAnimatingRef.current = true
 
+    // 모바일 감지 및 성능 최적화 파라미터
+    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const isLowPerformance = window.innerWidth <= 480
+    
+    // 디바이스에 따른 설정
+    const config = {
+      particleCount: isLowPerformance ? 800 : isMobile ? 1200 : 2000,
+      animationSpeed: isLowPerformance ? 0.5 : isMobile ? 0.75 : 1.0,
+      quality: isLowPerformance ? 0.5 : isMobile ? 0.75 : 1.0
+    }
+
     // Scene setup
     const scene = new THREE.Scene()
     sceneRef.current = scene
@@ -33,16 +44,21 @@ export default function PointCloudBackground() {
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ 
-      antialias: true,
-      alpha: true 
+      antialias: !isMobile, // 모바일에서는 안티앨리어싱 비활성화
+      alpha: true,
+      powerPreference: isMobile ? "low-power" : "high-performance"
     })
+    
+    // 모바일에서 픽셀 밀도 조정
+    const pixelRatio = isMobile ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio
+    renderer.setPixelRatio(pixelRatio * config.quality)
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setClearColor(0x000000, 0) // Transparent background
     rendererRef.current = renderer
     mountRef.current.appendChild(renderer.domElement)
 
     // Create point cloud
-    const particleCount = 2000
+    const particleCount = config.particleCount
     const positions = new Float32Array(particleCount * 3)
     const colors = new Float32Array(particleCount * 3)
     const sizes = new Float32Array(particleCount)
@@ -107,8 +123,9 @@ export default function PointCloudBackground() {
     
     console.log('PointCloudBackground: Particles created and added to scene', particles)
 
-    // Enhanced animation function with debugging
+    // Enhanced animation function with performance optimization
     let time = 0
+    let frameCount = 0
     console.log('PointCloudBackground: Animation function created')
     
     const animate = () => {
@@ -117,46 +134,63 @@ export default function PointCloudBackground() {
         return
       }
       
-      time += 0.01
+      frameCount++
       
-      const positions = particlesRef.current.geometry.attributes.position.array
-      const originalPositions = originalPositionsRef.current
+      // 모바일에서 프레임 스킵으로 성능 최적화
+      const shouldUpdate = isMobile ? frameCount % 2 === 0 : true
       
-      // Enhanced particle animation
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3
+      if (shouldUpdate) {
+        time += 0.01 * config.animationSpeed
         
-        // Get original position
-        const originalX = originalPositions[i3]
-        const originalY = originalPositions[i3 + 1]
-        const originalZ = originalPositions[i3 + 2]
+        const positions = particlesRef.current.geometry.attributes.position.array
+        const originalPositions = originalPositionsRef.current
         
-        // Multi-layered wave animation
-        const waveX = Math.sin(time * 2 + originalX * 0.01) * 2
-        const waveY = Math.cos(time * 1.5 + originalY * 0.02) * 1.5
-        const waveZ = Math.sin(time * 3 + originalZ * 0.015) * 1
+        // Enhanced particle animation with reduced calculations for mobile
+        for (let i = 0; i < particleCount; i++) {
+          const i3 = i * 3
+          
+          // Get original position
+          const originalX = originalPositions[i3]
+          const originalY = originalPositions[i3 + 1]
+          const originalZ = originalPositions[i3 + 2]
+          
+          if (isMobile) {
+            // 모바일에서는 단순한 애니메이션
+            const waveX = Math.sin(time + originalX * 0.01) * 1.5
+            const waveY = Math.cos(time + originalY * 0.02) * 1
+            
+            positions[i3] = originalX + waveX
+            positions[i3 + 1] = originalY + waveY
+            positions[i3 + 2] = originalZ
+          } else {
+            // 데스크톱에서는 복잡한 애니메이션
+            const waveX = Math.sin(time * 2 + originalX * 0.01) * 2
+            const waveY = Math.cos(time * 1.5 + originalY * 0.02) * 1.5
+            const waveZ = Math.sin(time * 3 + originalZ * 0.015) * 1
+            
+            // Floating animation
+            const floatY = Math.sin(time * 1.2 + originalX * 0.005) * 0.8
+            
+            // Spiral movement
+            const spiralAngle = time * 0.5 + i * 0.01
+            const spiralRadius = 0.5
+            const spiralX = Math.cos(spiralAngle) * spiralRadius
+            const spiralZ = Math.sin(spiralAngle) * spiralRadius
+            
+            // Combine all animations
+            positions[i3] = originalX + waveX + spiralX
+            positions[i3 + 1] = originalY + waveY + floatY
+            positions[i3 + 2] = originalZ + waveZ + spiralZ
+          }
+        }
         
-        // Floating animation
-        const floatY = Math.sin(time * 1.2 + originalX * 0.005) * 0.8
-        
-        // Spiral movement
-        const spiralAngle = time * 0.5 + i * 0.01
-        const spiralRadius = 0.5
-        const spiralX = Math.cos(spiralAngle) * spiralRadius
-        const spiralZ = Math.sin(spiralAngle) * spiralRadius
-        
-        // Combine all animations
-        positions[i3] = originalX + waveX + spiralX
-        positions[i3 + 1] = originalY + waveY + floatY
-        positions[i3 + 2] = originalZ + waveZ + spiralZ
+        // Force geometry update - multiple methods for compatibility
+        const geometry = particlesRef.current.geometry
+        const positionAttribute = geometry.attributes.position
+        positionAttribute.needsUpdate = true
+        geometry.computeBoundingSphere()
+        geometry.computeBoundingBox()
       }
-      
-      // Force geometry update - multiple methods for compatibility
-      const geometry = particlesRef.current.geometry
-      const positionAttribute = geometry.attributes.position
-      positionAttribute.needsUpdate = true
-      geometry.computeBoundingSphere()
-      geometry.computeBoundingBox()
       
       // Gentle rotation of entire cloud
       particlesRef.current.rotation.y += 0.001

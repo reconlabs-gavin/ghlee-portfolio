@@ -39,7 +39,7 @@ Repository → Settings → Secrets and variables → Actions
 - `S3_BUCKET_NAME`: 생성한 S3 버킷 이름
 - `CLOUDFRONT_DISTRIBUTION_ID`: CloudFront 배포 ID
 - `DOMAIN_NAME`: 연결할 도메인 (선택사항)
-
+ 
 ## 6. Route 53 도메인 연결 (선택사항)
 1. Route 53 → Hosted zones → 도메인 선택
 2. A 레코드 생성:
@@ -51,10 +51,55 @@ Repository → Settings → Secrets and variables → Actions
    
    ⚠️ **주의**: S3 웹사이트 엔드포인트 URL을 직접 입력하지 마세요!
 
-## 7. SSL 인증서 (선택사항)
-1. Certificate Manager → Request certificate
-2. 도메인 이름 입력 및 DNS 검증
-3. CloudFront 배포에 SSL 인증서 연결
+## 7. SSL 인증서 설정
+
+**⚠️ 중요: Certificate Manager는 반드시 us-east-1 리전에서 생성해야 합니다!**
+
+### 7.1 SSL 인증서 요청 (또는 기존 인증서 사용)
+
+**기존 인증서가 있는 경우:**
+1. **Certificate Manager (us-east-1 리전)에서 기존 인증서 확인**
+2. **상태가 "발급됨"이면 7.3단계로 바로 이동**
+3. **"검증 보류중"이면 7.2단계에서 DNS 검증 완료**
+
+**새 인증서가 필요한 경우:**
+1. **AWS Console → Certificate Manager (us-east-1 리전)**
+2. **"인증서 요청" → "퍼블릭 인증서 요청"**
+3. **도메인 이름**: 
+   - `ghlee-edu.com`
+   - `*.ghlee-edu.com` (서브도메인용, 선택사항)
+4. **검증 방법**: DNS 검증 선택
+5. **"요청" 클릭**
+
+### 7.2 DNS 검증 설정
+1. **Certificate Manager → 인증서 상세 페이지**
+2. **DNS 검증 정보 확인** (CNAME 레코드)
+3. **Route 53 → Hosted zones → ghlee-edu.com**
+4. **"레코드 생성"**:
+   - Name: Certificate Manager 제공 이름
+   - Type: CNAME  
+   - Value: Certificate Manager 제공 값
+5. **인증서 상태가 "발급됨"으로 변경될 때까지 대기** (5-30분)
+
+### 7.3 CloudFront에 SSL 인증서 연결
+1. **CloudFront → Distribution → "일반" 탭 → "편집"**
+2. **대체 도메인 이름(CNAME)**: `ghlee-edu.com` 추가
+3. **사용자 지정 SSL 인증서**: 생성한 인증서 선택
+4. **SSL/TLS 암호화**: SNI만 지원
+5. **"변경 사항 저장"**
+
+## 8. HTTPS 보안 연결 강제 설정
+
+### 8.1 HTTP → HTTPS 리다이렉트 설정
+1. **CloudFront → Distribution → "동작" 탭**
+2. **"Default (*)" 동작 선택 → "편집"**
+3. **"뷰어 프로토콜 정책": "Redirect HTTP to HTTPS"** 선택
+4. **"변경 사항 저장"**
+5. **배포 완료 대기** (10-15분)
+
+### 8.2 테스트
+- `http://ghlee-edu.com` 접속 → 자동으로 `https://`로 리다이렉트
+- 브라우저 주소창에 자물쇠 🔒 아이콘 표시
 
 ## 배포 프로세스
 1. `main` 브랜치에 코드 푸시
@@ -113,3 +158,26 @@ Route 53 도메인이 이메일 미인증으로 일시 중지된 경우:
 6. 라우팅 정책: 단순 라우팅
 
 ⚠️ **중요**: 값이나 엔드포인트 필드에 직접 타이핑하지 마세요!
+
+### 커스텀 도메인 403 에러 해결
+**오류**: `ghlee-edu.com`으로 접속 시 403 에러
+
+**원인**: CloudFront에 커스텀 도메인과 SSL 인증서가 설정되지 않음
+
+**해결방법**:
+1. **Certificate Manager에서 SSL 인증서 생성** (us-east-1 리전)
+2. **Route 53에 DNS 검증 CNAME 레코드 추가**
+3. **CloudFront에 대체 도메인 이름과 SSL 인증서 설정**
+4. **배포 완료 후 테스트**: `https://ghlee-edu.com`
+
+**임시 테스트**: SSL 설정 전 `http://ghlee-edu.com` (HTTP)로 접속 가능
+
+### HTTPS 관련 트러블슈팅
+
+**오류 3**: "인증서가 유효하지만 HTTPS가 작동하지 않음"
+- **원인**: CloudFront Viewer Protocol Policy가 HTTP를 허용하도록 설정됨
+- **해결**: Behaviors 탭에서 "Redirect HTTP to HTTPS"로 변경
+
+**오류 4**: "보안 연결이 사용되지 않음" 경고
+- **원인**: HTTPS 강제 설정이 누락됨  
+- **해결**: CloudFront Behaviors에서 Viewer Protocol Policy 변경
