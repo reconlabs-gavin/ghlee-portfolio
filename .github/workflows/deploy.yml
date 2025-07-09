@@ -69,3 +69,4 @@ jobs:
         echo "CloudFront URL: https://d10qv6lzjlgx83.cloudfront.net"
         echo "Custom Domain: https://${{ secrets.DOMAIN_NAME }}"
         echo "Website is now live at: https://ghlee-edu.com"
+        echo "Deployment completed at: $(date)"
